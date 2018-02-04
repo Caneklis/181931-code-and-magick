@@ -18,29 +18,41 @@ var WIZARD_COAT_COLOR = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 10
 
 var WIZARD_EYES_COLOR = ['black', 'red', 'blue', 'yellow', 'green'];
 
-function Wizard(name, surname, coatColor, eyesColor) {
-  this.name = name + ' ' + surname;
-  this.coatColor = coatColor;
-  this.eyesColor = eyesColor;
-}
+var getRandomItem = function (array) {
+  return Math.floor(Math.random() * array.length);
+};
 
-var wizardArr = [];
+var createWizard = function (quantity) {
+  var wizardArr = [];
+  for (var i = 0; i < quantity; i++) {
+    wizardArr[i] = {
+      name: WIZARD_FIRST_NAMES[getRandomItem(WIZARD_FIRST_NAMES)] + ' ' + WIZARD_SURNAMES[getRandomItem(WIZARD_SURNAMES)],
+      coatColor: WIZARD_COAT_COLOR[getRandomItem(WIZARD_COAT_COLOR)],
+      eyesColor: WIZARD_EYES_COLOR[getRandomItem(WIZARD_EYES_COLOR)]
+    };
+  }
+  return wizardArr;
+};
 
-for (i = 0; i < WIZARD_QUANTITY; i++) {
-  var randomName = Math.floor(Math.random() * WIZARD_FIRST_NAMES.length);
-  var randomSurname = Math.floor(Math.random() * WIZARD_SURNAMES.length);
-  var randomCoat = Math.floor(Math.random() * WIZARD_COAT_COLOR.length);
-  var randomEyes = Math.floor(Math.random() * WIZARD_EYES_COLOR.length);
+var wizardArr = createWizard(WIZARD_QUANTITY);
 
-  wizardArr[i] = new Wizard(WIZARD_FIRST_NAMES[randomName], WIZARD_SURNAMES[randomSurname], WIZARD_COAT_COLOR[randomCoat], WIZARD_EYES_COLOR[randomEyes]);
-}
-
-for (var i = 0; i < wizardArr.length; i++) {
+var createWizardElement = function (wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
 
-  wizardElement.querySelector('.setup-similar-label').textContent = wizardArr[i].name;
-  wizardElement.querySelector('.wizard-coat').style.fill = wizardArr[i].coatColor;
-  wizardElement.querySelector('.wizard-eyes').style.fill = wizardArr[i].eyesColor;
+  wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
+  wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
+  wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
 
-  similarListElement.appendChild(wizardElement);
-}
+  return wizardElement;
+};
+
+var repeatWizarElement = function () {
+  var blockItem = document.createDocumentFragment();
+  for (var i = 0; i < wizardArr.length; i++) {
+    blockItem.appendChild(createWizardElement(wizardArr[i]));
+  }
+
+  similarListElement.appendChild(blockItem);
+};
+
+repeatWizarElement();
