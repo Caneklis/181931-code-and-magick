@@ -1,16 +1,122 @@
 'use strict';
+
 var WIZARD_QUANTITY = 4;
-
 var WIZARD_FIRST_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпина', 'Вашингтон'];
-
 var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
-
 var WIZARD_COAT_COLOR = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-
 var WIZARD_EYES_COLOR = ['black', 'red', 'blue', 'yellow', 'green'];
+var FIREBALL_COLOR = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
-var showWindow = document.querySelector('.setup');
-showWindow.classList.remove('hidden');
+var setupWindow = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setupWindow.querySelector('.setup-close');
+var setupOpenIcon = document.querySelector('.setup-open-icon');
+setupOpenIcon.setAttribute('tabindex', 0);
+setupClose.setAttribute('tabindex', 0);
+
+/**
+ * Функция закрытия окна по клавише ESC
+ * @param {object} evt
+ */
+var onWindowEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE && userNameInput !== document.activeElement) {
+    closeWindow();
+  }
+};
+
+/**
+ * Функция открытия окна настроек
+ */
+var openWindow = function () {
+  setupWindow.classList.remove('hidden');
+  document.addEventListener('keydown', onWindowEscPress);
+};
+
+/**
+ * Функция закрытия окна настроек
+ */
+var closeWindow = function () {
+  setupWindow.classList.add('hidden');
+  document.removeEventListener('keydown', onWindowEscPress);
+};
+
+setupOpen.addEventListener('click', function () {
+  openWindow();
+});
+
+setupOpen.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openWindow();
+  }
+});
+
+setupClose.addEventListener('click', function () {
+  closeWindow();
+});
+
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeWindow();
+  }
+});
+
+var setupForm = document.querySelector('.setup-wizard-form');
+setupForm.setAttribute('action', 'https://js.dump.academy/code-and-magick');
+
+var userNameInput = setupWindow.querySelector('.setup-user-name');
+userNameInput.setAttribute('minlength', 2);
+
+userNameInput.addEventListener('invalid', function () {
+  if (userNameInput.validity.tooShort) {
+    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (userNameInput.validity.valueMissing) {
+    userNameInput.setCustomValidity('Обязательное поле');
+  } else {
+    userNameInput.setCustomValidity('');
+  }
+});
+
+var submitButton = document.querySelector('.button');
+
+/**
+ * Функция отправки формы по нажатию ENTER
+ * @param {object} evt
+ */
+var submitForm = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    evt.form.submit();
+  }
+};
+
+submitButton.addEventListener('keydow', submitForm);
+
+/**
+ * Функция изменения цвета глаз при клике
+ */
+var changeEyesColor = function () {
+  document.body.querySelector('.setup-player .wizard-eyes').style.fill = getRandomItem(WIZARD_EYES_COLOR);
+};
+
+document.body.querySelector('.setup-player .wizard-eyes').addEventListener('click', changeEyesColor);
+
+/**
+ * Функция изменения цвета мантии при клике
+ */
+var changeCoatColor = function () {
+  document.body.querySelector('.setup-player .wizard-coat').style.fill = getRandomItem(WIZARD_COAT_COLOR);
+};
+document.body.querySelector('.setup-player .wizard-coat').addEventListener('click', changeCoatColor);
+
+
+/**
+ * Функция изменения цвета фаербола при клике
+ */
+var changeFireballColor = function () {
+  document.body.querySelector('.setup-fireball-wrap').style.backgroundColor = getRandomItem(FIREBALL_COLOR);
+};
+document.body.querySelector('.setup-fireball-wrap').addEventListener('click', changeFireballColor);
 
 document.querySelector('.setup-similar').classList.remove('hidden');
 
